@@ -9,10 +9,12 @@ import (
 )
 
 func main() {
+
 	reader := bufio.NewReader(os.Stdin)
 
 	fmt.Print("How many numbers do you want to enter -> ")
 
+	// fracText will hold the input fractions in string format
 	var fracText []string
 
 	text, _ := reader.ReadString('\n')
@@ -29,39 +31,54 @@ func main() {
 		}
 	}
 
-	numArr := 1
-	denArr := 1
+	var (
+		numArr []int
+		denArr []int
+	)
 
 	for i := 0; i < len(fracText); i++ {
 		fracArr := strings.Split(fracText[i], "/")
 
 		num, numErr := strconv.Atoi(fracArr[0])
 		if numErr == nil {
-			numArr = numArr * num
+			numArr = append(numArr, num)
 		}
 
 		den, denErr := strconv.Atoi(fracArr[1])
 		if denErr == nil {
-			denArr = denArr * den
+			denArr = append(denArr, den)
 		}
 	}
 
-	fmt.Println("numArr : ", numArr)
-	fmt.Println("denArr : ", denArr)
-
-	hcf := HCF([]int{numArr, denArr}, 2)
-	fmt.Println("hcf : ", hcf)
-
-	numArr = numArr / hcf
-	denArr = denArr / hcf
-
-	n1 := strconv.Itoa(numArr)
-	d1 := strconv.Itoa(denArr)
-
-	fmt.Println("res : " + n1 + "/" + d1)
-
+	res := multiplyFractions(numArr, denArr)
+	fmt.Println("Result is : ", res)
 }
 
+func multiplyFractions(numArr []int, denArr []int) string {
+	numMul := 1
+	denMul := 1
+
+	for i := 0; i < len(numArr); i++ {
+		numMul = numMul * numArr[i]
+	}
+
+	for i := 0; i < len(denArr); i++ {
+		denMul = denMul * denArr[i]
+	}
+
+	hcf := reduce([]int{numMul, denMul}, 2)
+	fmt.Println("hcf : ", hcf)
+
+	numMul = numMul / hcf
+	denMul = denMul / hcf
+
+	n1 := strconv.Itoa(numMul)
+	d1 := strconv.Itoa(denMul)
+
+	return n1 + "/" + d1
+}
+
+// gcd will determine the greatest common divisor
 func gcd(a int, b int) int {
 	if a == 0 {
 		return b
@@ -78,8 +95,8 @@ func gcd(a int, b int) int {
 	return gcd(a, b-a)
 }
 
-// HCF of Denominator
-func HCF(den []int, N int) int {
+// reduce will determine the greatest common factor (GCF)
+func reduce(den []int, N int) int {
 	ans := den[0]
 	for i := 1; i < N; i++ {
 		ans = gcd(den[i], ans)
