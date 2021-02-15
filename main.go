@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	"fmt"
+	"log"
 	"os"
 	"strconv"
 	"strings"
@@ -12,23 +13,33 @@ func main() {
 
 	reader := bufio.NewReader(os.Stdin)
 
+	// as per requirement 2 numbers need to multiplied but for more than two numbers also this program can be used
+	fmt.Print("How many numbers do you want to enter -> ")
+
+	// fracText will hold the input fractions in string format
 	var fracText []string
 
-	// since as per requirement multiplyFractions function needs to take two fractions as input that's why the array length is 2
-	// in case we want to increase the array number or if we want to take input from users how many fractions they want to multiply
-	// that can be customized by making the array length as per user input and passing the appropriate parameters to multiplyFractions
-	for i := 0; i < 2; i++ {
-		fmt.Printf("Enter number %d: ", i+1)
-		num, _ := reader.ReadString('\n')
-		num = strings.Replace(num, "\n", "", -1)
-		fracText = append(fracText, num)
-	}
+	text, _ := reader.ReadString('\n')
+	text = strings.Replace(text, "\n", "", -1)
 
-	res := multiplyFractions(fracText[0], fracText[1])
+	numLen, err := strconv.Atoi(text)
+	if err != nil {
+		log.Fatal(err)
+	} else {
+		for i := 0; i < numLen; i++ {
+			fmt.Printf("Enter number %d in fraction format: ", i+1)
+			num, _ := reader.ReadString('\n')
+			num = strings.Replace(num, "\n", "", -1)
+			if len(num) > 0 {
+				fracText = append(fracText, num)
+			}
+		}
+	}
+	res := multiplyFractions(fracText...)
 	fmt.Println("Result is : ", res)
 }
 
-// multiplyFractions takes two fractions and multiply them.
+// multiplyFractions takes fractions in string format and multiply them.
 func multiplyFractions(fractions ...string) string {
 	var (
 		numArr []int
@@ -60,17 +71,25 @@ func multiplyFractions(fractions ...string) string {
 	return n1 + "/" + d1
 }
 
-// getFractionArrays gets the fraction in string format, splits into numerator and denominator and pushes to appropriate array
+// getFractionArrays receives the fraction in string format, splits into numerator and denominator, pushes to appropriate arrays and returns
 func getFractionArrays(fraction string, numArr *[]int, denArr *[]int) {
-	fracArr := strings.Split(fraction, "/")
-	num, numErr := strconv.Atoi(fracArr[0])
-	if numErr == nil {
-		*numArr = append(*numArr, num)
-	}
+	if strings.Index(fraction, "/") > -1 {
+		fracArr := strings.Split(fraction, "/")
+		num, numErr := strconv.Atoi(fracArr[0])
+		if numErr != nil {
+			log.Fatal(numErr)
+		} else {
+			*numArr = append(*numArr, num)
+		}
 
-	den, denErr := strconv.Atoi(fracArr[1])
-	if denErr == nil {
-		*denArr = append(*denArr, den)
+		den, denErr := strconv.Atoi(fracArr[1])
+		if denErr != nil {
+			log.Fatal(denErr)
+		} else {
+			*denArr = append(*denArr, den)
+		}
+	} else {
+		log.Fatal("Oops! You need to enter the numbers in fraction format")
 	}
 }
 

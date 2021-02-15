@@ -4,17 +4,17 @@ import "testing"
 
 func TestTableMultiplyFractions(t *testing.T) {
 	var tests = []struct {
-		inputFracOne string
-		inputFracTwo string
-		expected     string
+		inputFracs []string
+		expected   string
 	}{
-		{"3/4", "5/6", "5/8"},
-		{"56/78", "23/67", "644/2613"},
+		{[]string{"3/4", "5/6"}, "5/8"},
+		{[]string{"56/78", "23/67"}, "644/2613"},
+		{[]string{"2/3", "5/8", "11/32"}, "55/384"},
 	}
 
 	for _, test := range tests {
-		if output := multiplyFractions(test.inputFracOne, test.inputFracTwo); output != test.expected {
-			t.Error("Test failed: {} {} inputted, {} expected, received: {}", test.inputFracOne, test.inputFracTwo, test.expected, output)
+		if output := multiplyFractions(test.inputFracs...); output != test.expected {
+			t.Error("Test failed: {} inputted, {} expected, received: {}", test.inputFracs, test.expected, output)
 		}
 	}
 }
