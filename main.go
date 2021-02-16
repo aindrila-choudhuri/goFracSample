@@ -34,10 +34,6 @@ func main() {
 		for i := 0; i < numLen; i++ {
 			fmt.Printf("Enter number %d in fraction format: ", i+1)
 			num, _ := reader.ReadString('\n')
-			num = strings.Trim(strings.Replace(num, "\n", "", -1), " ")
-			if !isValidInput(num) {
-				return
-			}
 			if len(num) > 0 {
 				fracText = append(fracText, num)
 			}
@@ -99,6 +95,10 @@ func multiplyFractions(fractions ...string) string {
 
 // getFractionMultiplicationResult splits each fraction into numerator and denominator and multiplies
 func getFractionMultiplicationResult(fraction string, numMul, denMul *int) {
+	fraction = strings.Trim(strings.Replace(fraction, "\n", "", -1), " ")
+	if !isValidInput(fraction) {
+		return
+	}
 	fracArr := strings.Split(fraction, "/")
 	num, numErr := strconv.Atoi(fracArr[0])
 	if numErr != nil {
